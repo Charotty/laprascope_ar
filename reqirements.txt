@@ -1,0 +1,27 @@
+# FastAPI web server
+fastapi
+uvicorn[standard]
+
+# DICOM processing
+pydicom
+SimpleITK
+
+# 3D segmentation and mesh
+vtk
+trimesh
+meshio
+
+# Scientific computing
+numpy
+scipy
+pandas
+
+# Reporting and export
+reportlab
+Pillow
+
+# Logging and utilities
+python-multipart
+
+# Testing
+pytest
