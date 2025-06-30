@@ -1,0 +1,6 @@
+# Зависимости Python для backend
+# Например:
+# fastapi==0.95.0
+# pydicom==2.4.0
+# simpleitk==2.2.0
+
