@@ -4,3 +4,10 @@
 # pydicom==2.4.0
 # simpleitk==2.2.0
 
+fastapi
+pydicom
+numpy
+pillow
+trimesh
+meshio
+matplotlib

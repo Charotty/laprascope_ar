@@ -1,4 +1,9 @@
 # FastAPI web server
+# This file contains all the dependencies needed for the FastAPI web server
+# that processes DICOM files and performs 3D segmentation and mesh generation.
+
+# Web framework
+# FastAPI is used for building the web server.
 fastapi
 uvicorn[standard]
 

@@ -4,49 +4,17 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="4e1d22eb-5085-4907-82ae-feab5d4fc4b5" name="Changes" comment="21.39 29/06">
-      <change afterPath="$PROJECT_DIR$/.github/.gitkeep" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/app/.gitkeep" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/app/main.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/calculations/.gitkeep" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/calculations/trocar_calculations.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/dicom/.gitkeep" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/dicom/parser.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/export/.gitkeep" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/export/report_generator.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/models/.gitkeep" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/models/model_handler.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/requirements.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/segmentation/.gitkeep" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/segmentation/segmentation.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/tests/.gitkeep" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/tests/test_app.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/dicom_samples/.gitkeep" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/dicom_samples/example.dcm" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/models/.gitkeep" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/models/example_model.stl" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/reports/.gitkeep" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/reports/example_report.pdf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/docs/.gitkeep" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/docs/readme_tz.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/unity-client/Assets/.gitkeep" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/unity-client/Assets/README.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/unity-client/Plugins/.gitkeep" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/unity-client/Plugins/README.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/unity-client/ProjectSettings/.gitkeep" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/unity-client/ProjectSettings/README.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/unity-client/Scenes/.gitkeep" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/unity-client/Scenes/main_scene.unity" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/unity-client/Scripts/.gitkeep" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/unity-client/Scripts/api_handler.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/unity-client/Tests/.gitkeep" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/unity-client/Tests/test_script.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Диме тз на подумать.md" afterDir="false" />
+    <list default="true" id="4e1d22eb-5085-4907-82ae-feab5d4fc4b5" name="Changes" comment="29.06 21">
+      <change afterPath="$PROJECT_DIR$/backend/dicom/pacs_import.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/plan_development.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/1.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/2.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/3.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/app/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/app/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/calculations/trocar_calculations.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/calculations/trocar_calculations.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/dicom/parser.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/dicom/parser.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/models/model_handler.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/models/model_handler.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/backend/requirements.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/segmentation/segmentation.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/segmentation/segmentation.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/reqirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -54,45 +22,50 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="Git.Settings">
+    <option name="PREVIOUS_COMMIT_AUTHORS">
+      <list>
+        <option value="Alexandr Arefjew &lt;x.xxxx46.xx@gmail.com&gt;" />
+      </list>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="GitHubPullRequestSearchHistory">{
-  &quot;lastFilter&quot;: {
-    &quot;state&quot;: &quot;OPEN&quot;,
-    &quot;assignee&quot;: &quot;Charotty&quot;
+  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+  "lastFilter": {
+    "state": "OPEN",
+    "assignee": "xxx0559"
   }
-}</component>
+}]]></component>
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
     &quot;url&quot;: &quot;https://github.com/Charotty/laprascope_ar.git&quot;,
-    &quot;accountId&quot;: &quot;a109c629-1bc0-4c77-b0fe-d58282746fd7&quot;
+    &quot;accountId&quot;: &quot;136d297e-8b39-44e0-bcb3-089fd0ed13a3&quot;
   }
 }</component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 1
 }</component>
   <component name="ProjectId" id="2zBz4STybZReS7uq5851gRageJ0" />
-  <component name="ProjectLevelVcsManager">
-    <ConfirmationsSetting value="2" id="Add" />
-  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "Python tests.Python tests in main.py.executor": "Run",
+    "Python.parser.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "master",
+    "ignore.virus.scanning.warn.message": "true",
+    "settings.editor.selected.configurable": "preferences.pluginManager"
   }
-}</component>
-  <component name="RecentsManager">
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="D:\laprascope_ar" />
-    </key>
+}]]></component>
+  <component name="RunAnythingCache">
+    <option name="myCommands">
+      <command value=" (" />
+    </option>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
@@ -109,20 +82,21 @@
       <option name="presentableId" value="Default" />
       <updated>1751219066109</updated>
     </task>
-    <task id="LOCAL-00001" summary="21.39 29/06">
+    <task id="LOCAL-00001" summary="29.06 21">
       <option name="closed" value="true" />
-      <created>1751222391470</created>
+      <created>1751221566444</created>
       <option name="number" value="00001" />
       <option name="presentableId" value="LOCAL-00001" />
       <option name="project" value="LOCAL" />
-      <updated>1751222391470</updated>
+      <updated>1751221566444</updated>
     </task>
     <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="21.39 29/06" />
-    <option name="LAST_COMMIT_MESSAGE" value="21.39 29/06" />
+    <MESSAGE value="29.06" />
+    <MESSAGE value="29.06 21" />
+    <option name="LAST_COMMIT_MESSAGE" value="29.06 21" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
