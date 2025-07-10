@@ -2,8 +2,7 @@
 # Здесь будет реализован парсинг и базовая обработка DICOM
 
 import pydicom
-from pydicom.filereader import dcmread
-from pydicom.filereader import read_dicomdir
+from pydicom import dcmread
 from pydicom.errors import InvalidDicomError
 from pydicom.data import get_testdata_file
 from PIL import Image
@@ -29,7 +28,7 @@ def read_dicom_info(filepath):
     for elem in ds:
         if elem.VR != 'SQ':  # Не выводим вложенные последовательности
             print(f"{elem.tag} {elem.name}: {elem.value}")
-    # Кратко выводим основные поля
+    # Кратко выв��дим основные поля
     print(f"Пациент: {ds.get('PatientName', 'N/A')}")
     print(f"ID пациента: {ds.get('PatientID', 'N/A')}")
     print(f"Модальность: {ds.get('Modality', 'N/A')}")
@@ -94,7 +93,7 @@ def parse_dicomdir(dicomdir_path, base_folder=None):
     Парсит DICOMDIR и возвращает список путей к DICOM-файлам серии.
     Если base_folder не указан, берёт папку DICOMDIR.
     """
-    dicomdir = read_dicomdir(dicomdir_path)
+    dicomdir = dcmread(dicomdir_path)
     if base_folder is None:
         base_folder = os.path.dirname(dicomdir_path)
     file_list = []
@@ -259,9 +258,9 @@ if __name__ == "__main__":
         # Выводим все собранные теги в формате JSON для отладки
         print("\n======= ВСЕ ТЕГИ В JSON =======")
         print(json.dumps(all_tags, ensure_ascii=False, indent=2))
-        # Сохраняем результат в отдельную папку с именем пациента
+        # С��храняем результат в отдельную папку с именем пациента
         import shutil
-        # Имя пациента = название папки выше (на��ример, Б��нникова)
+        # Имя па��иента = название папки выше (на��ример, Б��нникова)
         patient_name = os.path.basename(os.path.dirname(folder))
         out_dir = os.path.join(os.path.dirname(__file__), '../../data/reports', patient_name)
         os.makedirs(out_dir, exist_ok=True)

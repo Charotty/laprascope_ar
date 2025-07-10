@@ -1,8 +1,7 @@
-from fastapi import FastAPI, UploadFile, File, Form, Request
+from fastapi import FastAPI, UploadFile, File, Form, Request, Body
 from fastapi.responses import JSONResponse
 import os
 import tempfile
-import numpy as np
 from backend.models.model_handler import load_stl_model, get_mesh_surface_points, export_points_json
 from backend.calculations.trocar_calculations import calculate_trocar_points
 from backend.segmentation.segmentation import segment_and_export, segment_and_export_full
@@ -132,7 +131,7 @@ def import_segment_pacs(
     from backend.segmentation.segmentation import segment_and_export_full
     out_dir = os.path.join("data", "dicom_samples", f"pacs_import_{uuid.uuid4().hex[:8]}")
     try:
-        # 1. Импорт из PACS
+        # 1. Импорт из PACС
         download_dicom_series_orthanc(orthanc_url, series_uid, out_dir, username, password)
         # 2. Валидация
         dicom_files = find_dicom_series(out_dir)
@@ -149,7 +148,7 @@ def import_segment_pacs(
         segm_out_dir = os.path.join("data", "reports", f"segmentation_{uuid.uuid4().hex[:8]}")
         os.makedirs(segm_out_dir, exist_ok=True)
         # Для простоты передаём папку, где лежат только валидные файлы
-        # Можно скопиров��ть валидные файлы во временную папку, если нужно
+        # Можно скопиров��ть в��лидные файлы во временную папку, если нужно
         import shutil
         temp_valid_dir = os.path.join(segm_out_dir, "valid_dicom")
         os.makedirs(temp_valid_dir, exist_ok=True)
@@ -169,10 +168,102 @@ def import_segment_pacs(
     except Exception as e:
         return JSONResponse(status_code=500, content={"detail": str(e)})
 
+@app.post("/export/report/")
+def export_report(request: Request):
+    """
+    Заглушка: экспорт PDF-отчёта, PNG-скриншотов, логов (JSON/CSV)
+    Принимает параметры через JSON body (например, patient_id, options)
+    Возвращает путь к файлу или ссылку (заглушка)
+    """
+    try:
+        data = request.json() if hasattr(request, 'json') else {}
+    except Exception:
+        data = {}
+    # TODO: вызвать генератор отчёта, собрать PNG, логи и PDF
+    return JSONResponse({
+        "status": "ok",
+        "report_path": "/path/to/report.pdf",
+        "log_path": "/path/to/log.json",
+        "png_path": "/path/to/screenshot.png"
+    })
+
+@app.post("/log/")
+def log_user_action(request: Request):
+    """
+    Заглушка: логирование действий пользователя (например, корректировка, экспорт, просмотр)
+    Принимает JSON с описанием действия
+    """
+    try:
+        data = request.json() if hasattr(request, 'json') else {}
+    except Exception:
+        data = {}
+    # TODO: сохранить лог в файл или БД
+    return JSONResponse({"status": "logged", "action": data})
+
+@app.post("/unity/upload/")
+def unity_upload(file: UploadFile = File(...), meta: str = Form("{}")):
+    """
+    Заглушка: загрузка моделей, масок, отчётов из Unity
+    """
+    # TODO: сохранить файл и метаданные
+    return JSONResponse({"status": "uploaded", "filename": file.filename})
+
+@app.get("/unity/download/")
+def unity_download(filename: str):
+    """
+    Заглушка: скачивание моделей, масок, отчётов для Unity
+    """
+    # TODO: реализовать выдачу файла
+    return JSONResponse({"status": "ready", "filename": filename})
+
+@app.post("/anatomical_points/")
+def save_anatomical_points(patient_id: str = Form(...), points: str = Form(...)):
+    """
+    Принимает и сохраняет анатомические точки для пациент��.
+    points — JSON-строка вида {"asis": [x, y, z], "umbilicus": [x, y, z], ...}
+    """
+    import json
+    out_dir = os.path.join("data", "reports", patient_id)
+    os.makedirs(out_dir, exist_ok=True)
+    points_path = os.path.join(out_dir, "anatomical_points.json")
+    with open(points_path, "w", encoding="utf-8") as f:
+        f.write(points)
+    return JSONResponse({"status": "ok", "points_path": points_path})
+
+@app.get("/anatomical_points/")
+def get_anatomical_points(patient_id: str):
+    """
+    Возвращает сохранённые анатомические точки для пациента.
+    """
+    points_path = os.path.join("data", "reports", patient_id, "anatomical_points.json")
+    if not os.path.exists(points_path):
+        return JSONResponse(status_code=404, content={"detail": "Points not found"})
+    with open(points_path, "r", encoding="utf-8") as f:
+        points = f.read()
+    return JSONResponse({"points": points})
+
+@app.post("/anatomical_cs/")
+def build_anatomical_cs(patient_id: str = Form(...)):
+    """
+    Строит анатомическую координатную систему по сохранённым точкам пациента.
+    Возвращает параметры системы координа�� (заглушка).
+    """
+    # TODO: реализовать построение координатной системы
+    # Сейчас возвращает заглушку
+    return JSONResponse({
+        "status": "ok",
+        "origin": [0, 0, 0],
+        "axes": {
+            "x": [1, 0, 0],
+            "y": [0, 1, 0],
+            "z": [0, 0, 1]
+        }
+    })
+
 @app.exception_handler(Exception)
 async def global_exception_handler(request: Request, exc: Exception):
     """
-    Глобальный обработчик ошибок: сохраняет ошибку в фай�� и возвращае�� JSON с ошибкой
+    Глоба��ьный обработчик ошибок: сохраняет ошибку в фай�� и возвращае�� JSON с ошибкой
     """
     error_dir = os.path.join(os.path.dirname(__file__), '../../data/reports/errors')
     os.makedirs(error_dir, exist_ok=True)

@@ -4,17 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="4e1d22eb-5085-4907-82ae-feab5d4fc4b5" name="Changes" comment="29.06 21">
-      <change afterPath="$PROJECT_DIR$/backend/dicom/pacs_import.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/plan_development.md" afterDir="false" />
+    <list default="true" id="4e1d22eb-5085-4907-82ae-feab5d4fc4b5" name="Changes" comment="10.07.2025 степан">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/app/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/app/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/calculations/trocar_calculations.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/calculations/trocar_calculations.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/dicom/parser.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/dicom/parser.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/models/model_handler.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/models/model_handler.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/backend/requirements.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/segmentation/segmentation.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/segmentation/segmentation.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/reqirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/plan_development.md" beforeDir="false" afterPath="$PROJECT_DIR$/backend/plan_development.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -90,13 +84,22 @@
       <option name="project" value="LOCAL" />
       <updated>1751221566444</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="10.07.2025 степан">
+      <option name="closed" value="true" />
+      <created>1752168008185</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1752168008185</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="29.06" />
     <MESSAGE value="29.06 21" />
-    <option name="LAST_COMMIT_MESSAGE" value="29.06 21" />
+    <MESSAGE value="10.07.2025 степан" />
+    <option name="LAST_COMMIT_MESSAGE" value="10.07.2025 степан" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
