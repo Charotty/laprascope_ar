@@ -1,35 +1,101 @@
 # Модуль для расчёта точек троакаров и углов
 # Здесь будут реализованы алгоритмы расчёта и анализа
 import numpy as np
+import trimesh
 
+# ------------------------------------------------------------
+#  Public API
+# ------------------------------------------------------------
 
-def calculate_trocar_points(mesh, anatomical_points, params=None):
+def calculate_trocar_points(
+    mesh: trimesh.Trimesh,
+    anatomical_points: dict[str, np.ndarray],
+    *,
+    num_ports: int = 3,
+    min_distance: float = 0.04,
+    max_angle_deg: float = 30,
+) -> tuple[np.ndarray, np.ndarray]:
+    """Подбор оптимальных точек введения троакаров.
+
+    Алгоритм (простая эвристика для MVP):
+    1. Сэмплируем 5× больше точек, чем нужно, на поверхности *mesh*.
+    2. Отбрасываем точки, чья нормаль отклонена от оси Z (пациент «лежа») > *max_angle_deg*.
+    3. Итерируемся, выбирая точку, максимально удалённую от уже выбранных *и* всех анатомических ориентиров.
+       При выборе также проверяем минимум расстояния `min_distance` (м).
+    4. Для каждой конечной точки возвращаем вектор нормали (для ориентации инструмента).
+
+    Параметры
+    ----------
+    mesh : trimesh.Trimesh
+        Трёхмерная сетка поверхности (обычно пациенты + кожа).
+    anatomical_points : dict[str, np.ndarray]
+        Ключевые ориентиры (ASIS, пупок и т.д.), в мировых координатах.
+    num_ports : int
+        Требуемое количество портов.
+    min_distance : float
+        Минимальное допустимое расстояние между портами, метры.
+    max_angle_deg : float
+        Предельно допустимое отклонение нормали от оси Z (deg).
+
+    Returns
+    -------
+    trocar_points : (N,3) np.ndarray
+    trocar_normals : (N,3) np.ndarray
     """
-    Расчёт оптимальных точек троакаров на поверхности mesh.
-    anatomical_points: dict с ключевыми анатомическими ориентирами (например, {'asis': [x,y,z], 'umbilicus': [x,y,z], ...})
-    params: dict с параметрами (например, количество троакаров, минимальные расстояния и т.д.)
-    Возвращает: список точек троакаров (N,3) и список углов (N,3)
-    """
-    # Пример: выбираем N точек, максимально удалённых друг от друга и от анатомических ориентиров
-    N = params.get('num_ports', 3) if params else 3
-    surface_points, _ = mesh.sample(N*10)
-    trocar_points = []
-    trocar_angles = []
-    used = []
-    for i in range(N):
-        # Находим точку, максимально удалённую от уже выбранных и анатомических ориентиров
-        dists = np.zeros(len(surface_points))
-        for j, pt in enumerate(surface_points):
-            d = 0
-            for ap in anatomical_points.values():
-                d += np.linalg.norm(pt - np.array(ap))
-            for up in used:
-                d += np.linalg.norm(pt - up)
-            dists[j] = d
-        idx = np.argmax(dists)
-        trocar_points.append(surface_points[idx])
-        used.append(surface_points[idx])
-        # Пример: угол нормали к поверхности в этой точке
-        normal = mesh.face_normals[mesh.nearest.face[idx]]
-        trocar_angles.append(normal)
-    return np.array(trocar_points), np.array(trocar_angles)
+
+    if num_ports < 1:
+        raise ValueError("num_ports must be >=1")
+
+    # 1. Сэмплируем достаточное количество точек
+    sample_count = num_ports * 10
+    surface_points, face_ids = mesh.sample(sample_count, return_index=True)
+    surface_normals = mesh.face_normals[face_ids]
+
+    # 2. Оставляем точки c нормалью близкой к +Z
+    z_axis = np.array([0, 0, 1.0])
+    cos_thr = np.cos(np.deg2rad(max_angle_deg))
+    keep_mask = (surface_normals @ z_axis) >= cos_thr
+    candidate_pts = surface_points[keep_mask]
+    candidate_normals = surface_normals[keep_mask]
+
+    if len(candidate_pts) < num_ports:
+        raise RuntimeError("Недостаточно кандидатных точек с подходящим углом нормали")
+
+    trocar_points: list[np.ndarray] = []
+    trocar_normals: list[np.ndarray] = []
+
+    # 3. Greedy-подбор точек
+    dist_ap = lambda pt: sum(np.linalg.norm(pt - ap) for ap in anatomical_points.values())
+
+    for _ in range(num_ports):
+        scores = []
+        for idx, pt in enumerate(candidate_pts):
+            # расстояние до анатомических + уже выбранных
+            score = dist_ap(pt)
+            for chosen in trocar_points:
+                score += np.linalg.norm(pt - chosen)
+            scores.append(score)
+
+        best_idx = int(np.argmax(scores))
+        best_pt = candidate_pts[best_idx]
+        best_n = candidate_normals[best_idx]
+
+        # Проверяем min_distance к уже выбранным
+        if any(np.linalg.norm(best_pt - p) < min_distance for p in trocar_points):
+            # Удаляем точку из кандидатов и продолжаем
+            candidate_pts = np.delete(candidate_pts, best_idx, axis=0)
+            candidate_normals = np.delete(candidate_normals, best_idx, axis=0)
+            continue
+
+        trocar_points.append(best_pt)
+        trocar_normals.append(best_n)
+
+        # Удаляем точки, которые стали слишком близко
+        keep = [np.linalg.norm(pt - best_pt) >= min_distance for pt in candidate_pts]
+        candidate_pts = candidate_pts[keep]
+        candidate_normals = candidate_normals[keep]
+
+        if len(candidate_pts) == 0 and len(trocar_points) < num_ports:
+            raise RuntimeError("Не удалось найти достаточно точек, удовлетворяющих min_distance")
+
+    return np.stack(trocar_points), np.stack(trocar_normals)
