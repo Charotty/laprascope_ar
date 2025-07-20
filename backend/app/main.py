@@ -1,15 +1,25 @@
-from fastapi import FastAPI, UploadFile, File, Form, Request, Body
+from fastapi import FastAPI, UploadFile, File, Form, Request, Body, BackgroundTasks, HTTPException
 from fastapi.responses import JSONResponse
 import os
 import tempfile
 from backend.models.model_handler import load_stl_model, get_mesh_surface_points, export_points_json
 from backend.calculations.trocar_calculations import calculate_trocar_points
-from backend.segmentation.segmentation import segment_and_export, segment_and_export_full
+from backend.segmentation.segmentation import segment_and_export, segment_and_export_full, EmptyMaskError
 from backend.dicom.pacs_import import download_dicom_series_orthanc
 from backend.dicom.parser import find_dicom_series, extended_validate_dicom_file, log_import_error
+from backend.dicom import dicom_service
 import datetime
 
+# In-memory simple task registry for async jobs (MVP, not for production)
+from typing import Dict, List
+import uuid as _uuid
+_tasks: Dict[str, Dict] = {}
+
 app = FastAPI()
+
+@app.get("/health")
+def health():
+    return {"status": "ok"}
 
 @app.post("/upload_stl/")
 def upload_stl(stl: UploadFile = File(...), anatomical_points: str = Form("{}"), num_ports: int = Form(3)):
@@ -60,6 +70,8 @@ def segment_dicom(dicom_folder: str = Form(...), threshold_min: int = Form(30), 
             "mask_png_dir": os.path.join(out_dir, "mask_png"),
             "message": "Сегментация выполнена успешно"
         })
+    except EmptyMaskError as e:
+        raise HTTPException(status_code=400, detail=str(e))
     except Exception as e:
         return JSONResponse(status_code=500, content={"detail": str(e)})
 
@@ -80,6 +92,8 @@ def segment_dicom_full(dicom_folder: str = Form(...), threshold_min: int = Form(
             "mask_png_dir": result["mask_png_dir"],
             "message": "Сегментация и экспорт выполнены успешно"
         })
+    except EmptyMaskError as e:
+        raise HTTPException(status_code=400, detail=str(e))
     except Exception as e:
         return JSONResponse(status_code=500, content={"detail": str(e)})
 
@@ -259,6 +273,64 @@ def build_anatomical_cs(patient_id: str = Form(...)):
             "z": [0, 0, 1]
         }
     })
+
+@app.post("/segment_dicom_async/")
+async def segment_dicom_async(
+    background_tasks: BackgroundTasks,
+    dicom_folder: str = Form(...),
+    threshold_min: int = Form(30),
+    threshold_max: int = Form(300),
+):
+    """Запускает сегментацию в фоне и возвращает task_id."""
+    task_id = _uuid.uuid4().hex[:8]
+    _tasks[task_id] = {"status": "pending"}
+
+    def _run():
+        try:
+            out_dir = os.path.join("data", "reports", f"segmentation_{task_id}")
+            os.makedirs(out_dir, exist_ok=True)
+            result = segment_and_export_full(dicom_folder, out_dir, threshold=(threshold_min, threshold_max))
+            _tasks[task_id] = {"status": "done", "result": result}
+        except EmptyMaskError as e:
+            _tasks[task_id] = {"status": "error", "detail": str(e)}
+        except Exception as e:
+            _tasks[task_id] = {"status": "error", "detail": str(e)}
+
+    background_tasks.add_task(_run)
+    return {"task_id": task_id, "status": "pending"}
+
+@app.get("/task_status/{task_id}")
+async def task_status(task_id: str):
+    if task_id not in _tasks:
+        raise HTTPException(status_code=404, detail="Task not found")
+    return _tasks[task_id]
+
+@app.post("/upload_dicom/")
+async def upload_dicom(
+    files: List[UploadFile] = File(...),
+    threshold_min: int = Form(30),
+    threshold_max: int = Form(300),
+):
+    """Принимает один или несколько DICOM-файлов, сохраняет во временную папку и запускает сегментацию."""
+    import uuid
+    # Сохраняем файлы через общий сервис
+    temp_root = dicom_service.save_uploaded_files([(f.filename, f.file.read()) for f in files])
+    # Запустим полную сегментацию
+    try:
+        out_dir = os.path.join("data", "reports", f"segmentation_{uuid.uuid4().hex[:8]}")
+        os.makedirs(out_dir, exist_ok=True)
+        result = segment_and_export_full(temp_root, out_dir, threshold=(threshold_min, threshold_max))
+        return JSONResponse({
+            "nifti_mask_path": result["nifti"],
+            "stl_path": result["stl"],
+            "gltf_path": result["gltf"],
+            "mask_png_dir": result["mask_png_dir"],
+            "message": "Импорт и сегментация выполнены успешно"
+        })
+    except EmptyMaskError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        return JSONResponse(status_code=500, content={"detail": str(e)})
 
 @app.exception_handler(Exception)
 async def global_exception_handler(request: Request, exc: Exception):

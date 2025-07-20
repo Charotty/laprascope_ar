@@ -7,6 +7,9 @@ import SimpleITK as sitk
 from skimage import measure
 import trimesh
 
+class EmptyMaskError(ValueError):
+    """Raised when a segmentation mask is completely empty (all zeros)."""
+
 def load_dicom_series(dicom_folder):
     """
     Загружает серию DICOM в 3D-массив (numpy) и возвращает image, array, spacing, origin, direction
@@ -51,10 +54,16 @@ def save_mask_png(mask, out_dir):
         img = Image.fromarray((slice_ * 255).astype(np.uint8))
         img.save(os.path.join(out_dir, f"mask_{i:03d}.png"))
 
+def _ensure_non_empty(mask):
+    """Raise EmptyMaskError if mask has no positive voxels."""
+    if not np.any(mask):
+        raise EmptyMaskError("Segmentation mask is empty – nothing to export.")
+
 def mask_to_stl(mask, spacing, out_path):
     """
     Преобразует бинарную маску (3D numpy) в STL-модель через marching cubes
     """
+    _ensure_non_empty(mask)
     verts, faces, normals, values = measure.marching_cubes(mask, level=0.5, spacing=spacing)
     mesh = trimesh.Trimesh(vertices=verts, faces=faces, vertex_normals=normals, process=True)
     mesh.export(out_path)
@@ -64,6 +73,7 @@ def mask_to_gltf(mask, spacing, out_path):
     """
     Преобразует бинарную маску (3D numpy) в GLTF-модель через marching cubes
     """
+    _ensure_non_empty(mask)
     verts, faces, normals, values = measure.marching_cubes(mask, level=0.5, spacing=spacing)
     mesh = trimesh.Trimesh(vertices=verts, faces=faces, vertex_normals=normals, process=True)
     mesh.export(out_path)
