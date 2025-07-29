@@ -27,6 +27,26 @@
 +  - Сглаживание mesh (Laplacian)
 +- **Тесты / CI**
 +  - Юнит-тест Dice ≥ 0.85 на hold-out наборе
++
++#### Инструкция «что сделать сейчас»
++1. Скачать исходные DICOM-серии (спина, бок) в `C:\data\raw_dicom`.
++2. Запустить анонимизацию:
++   ```ps1
++   python backend/dataset_tools/anonymize_dicom.py -i C:\data\raw_dicom -o C:\data\anon_dicom
++   ```
++3. Проверить юнит-тесты:
++   ```ps1
++   pytest backend/tests/test_anonymize_dicom.py
++   ```
++4. Предобработать серию:
++   ```ps1
++   python backend/dataset_tools/preprocess_volume.py \
++     --input C:\data\anon_dicom \
++     --output C:\data\volumes\patient001.npy
++   ```
++
++После успешного выполнения приступаем к этапу «Обучение и валидация модели».  
++Этот блок можно скрыть/раскрыть как чек-лист для команды.
 </details>
 |
 | C2 | **Надёжная привязка 3-D модели к пациенту** | • Поддержка ArUco/AprilTag маркеров <br> • ICP-совмещение поверхности кожи (Open3D) <br> • UI-калибровка смещения, миллиметровый offset-log |
@@ -86,9 +106,9 @@
 | M2 | **Расширенный алгоритм троакаров** | Учёт позы стола, соседних органов <br> Экспорт координат в DICOM SEG |
 +<details><summary>Подзадачи M2</summary>
 +
-+- Добавить input: table tilt, patient orientation
-+- Поддержка исключающих зон (печень, селезёнка) ← сегментация
-+- Экспорт результата через `highdicom.Segmentation`
++- ~~Добавить input: table tilt, patient orientation~~ ✅ реализовано Sprint 2025-07-29
++- ~~Поддержка исключающих зон (печень, селезёнка) ← сегментация~~ ✅ реализовано Sprint 2025-07-29
++- **Экспорт результата в DICOM SEG** (WIP)
 </details>
 |
 | M3 | **Расширенные тесты и CI** | Нагрузочные тесты больших томов <br> Unity WebGL build в GitHub Actions |

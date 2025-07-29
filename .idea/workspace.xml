@@ -4,9 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="4e1d22eb-5085-4907-82ae-feab5d4fc4b5" name="Changes" comment="21:11 20.07.2025">
+    <list default="true" id="4e1d22eb-5085-4907-82ae-feab5d4fc4b5" name="Changes" comment="20:41 28.07.2025">
+      <change beforePath="$PROJECT_DIR$/.github/workflows/unity-ci.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.github/workflows/unity-ci.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/app/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/app/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/calculations/trocar_calculations.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/calculations/trocar_calculations.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/plan_development.md" beforeDir="false" afterPath="$PROJECT_DIR$/backend/plan_development.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/backend/calculations/trocar_calculations.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/backend/calculations/trocar_calculations.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -14,6 +18,7 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="Git.Settings">
+    <option name="PUSH_AUTO_UPDATE" value="true" />
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="GitHubPullRequestSearchHistory">{
@@ -93,14 +98,23 @@
       <option name="project" value="LOCAL" />
       <updated>1753035089828</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="20:41 28.07.2025">
+      <option name="closed" value="true" />
+      <created>1753724491842</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1753724491843</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="21.39 29/06" />
     <MESSAGE value="21:09 20.07.2025" />
     <MESSAGE value="21:11 20.07.2025" />
-    <option name="LAST_COMMIT_MESSAGE" value="21:11 20.07.2025" />
+    <MESSAGE value="20:41 28.07.2025" />
+    <option name="LAST_COMMIT_MESSAGE" value="20:41 28.07.2025" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

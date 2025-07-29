@@ -22,7 +22,15 @@ def health():
     return {"status": "ok"}
 
 @app.post("/upload_stl/")
-def upload_stl(stl: UploadFile = File(...), anatomical_points: str = Form("{}"), num_ports: int = Form(3)):
+def upload_stl(
+    stl: UploadFile = File(...),
+    anatomical_points: str = Form("{}"),
+    num_ports: int = Form(3),
+    patient_position: str = Form("supine"),
+    table_pitch_deg: float = Form(0.0),
+    table_roll_deg: float = Form(0.0),
+    forbidden_mesh_paths: str = Form("[]"),
+):
     """
     Загружает STL, получает анатомические точки (JSON-строка), считает точки троакаров, возвращает их в JSON
     """
@@ -34,7 +42,25 @@ def upload_stl(stl: UploadFile = File(...), anatomical_points: str = Form("{}"),
         # anatomical_points: JSON-строка вида {"asis": [x,y,z], ...}
         import json
         anatomical_points_dict = json.loads(anatomical_points)
-        trocar_points, trocar_angles = calculate_trocar_points(mesh, anatomical_points_dict, params={"num_ports": num_ports})
+        import trimesh
+        forb_paths = json.loads(forbidden_mesh_paths)
+        forbidden_meshes = []
+        for p in forb_paths:
+            if os.path.exists(p):
+                try:
+                    forbidden_meshes.append(trimesh.load(p, force='mesh'))
+                except Exception:
+                    pass
+
+        trocar_points, trocar_angles = calculate_trocar_points(
+            mesh,
+            anatomical_points_dict,
+            num_ports=num_ports,
+            patient_position=patient_position,
+            table_pitch_deg=table_pitch_deg,
+            table_roll_deg=table_roll_deg,
+            forbidden_meshes=forbidden_meshes,
+        )
         # Экспортируем результат во временный JSON
         out_json = os.path.join(tmpdir, "trocar_points.json")
         export_points_json(trocar_points, out_json)
